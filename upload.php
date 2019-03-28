@@ -18,16 +18,17 @@ if (isset($_POST['upload'])) {
     } else {
         //checking if subfolder directory exists
         if (empty($location) || !isset($location) || $location === "" || $location === "uploads/") {
-            $explode = explode(".", $fileName);
-            $extension = end($explode);
-            $fileactualname = reset($explode);
-            $i=0;
-            while (file_exists('uploads/'.$fileName)) {
-                $i++;
-                $fileName= $i.$fileName;
-            }
-            $name = $fileName;
-            $moveResult = move_uploaded_file($fileTmpLoc, "uploads/".$name);
+          $explode = explode(".", $fileName);
+          $extension = end($explode);
+          $fileactualname = reset($explode);
+          $i = 0;
+          $fn = $fileName;
+          while (file_exists("uploads/".$fn)) {
+              $i++;
+              $fn = $i."_".$fileName;
+          }
+          $name = $fn;
+          $moveResult = move_uploaded_file($fileTmpLoc, "uploads/". $name);
             if ($moveResult != true) {
                 @unlink($fileTmpLoc);
                 header('location: ' . URL . '?page=0&sort=name&type=desc&folder=uploads/&message=uploaderror');
@@ -40,18 +41,25 @@ if (isset($_POST['upload'])) {
             $explode = explode(".", $fileName);
             $extension = end($explode);
             $fileactualname = reset($explode);
-            $i=0;
-            while (file_exists($location.$fileName)) {
+
+            $i = 0;
+            $fn = $fileName;
+
+            while (file_exists($location.$fn)) {
                 $i++;
-                $fileName= $i.$fileName;
+                // add number to actual filename
+                $fn = $i."_".$fileName;
             }
-            $name = $fileName;
+
+            $name = $fn;
             $moveResult = move_uploaded_file($fileTmpLoc, $location . "/". $name);
             if ($moveResult != true) {
                 @unlink($fileTmpLoc);
                 header('location: ' . URL . '?page=0&sort=name&type=desc&folder=uploads/&message=uploaderror');
+                exit();
             }
             header('location: ' . URL . '?page=0&sort=name&type=desc&folder='.$location.'/&message=success');
+            exit();
         }
     }
 } else {
