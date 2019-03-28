@@ -1,309 +1,275 @@
-<!DOCTYPE html>
-<html lang="en" dir="ltr">
-  <head>
-    <meta charset="utf-8">
-    <title>File Upload</title>
-    <link rel="stylesheet" href="css/bootstrap.css">
-    <script src = "https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-     <script src = "https://maxcdn.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js"></script>
-    <style>
-    .navbar{
-      box-shadow: 0 .125rem .25rem rgba(0,0,0,.075) !important;
-    }
-    .alert{
-      transition: 0.25s;
-      box-shadow: 0 .125rem .25rem rgba(0,0,0,.075) !important;
-    }
-    #customFile, .custom-file-label{
-      width:300px;
-      float:left;
-      text-align: left;
-    }
-    .nav-form-btn{
-      margin-left: 20px;
-      transition: 0.25s;
-    }
-    .btn{
-      width:100px;
-      float:left;
-      margin-left:20px;
-    }
-    .actions{
-      width:20%;
-    }
-    .nav-form form{
-      float:left;
-    }
-    .selector{
-
-    }
-    .selector select{
-      margin-left:20px;
-      display:block;
-    }
-    table tr{
-      transition: 0.1s;
-    }
-    table tr:hover {
-      transition: 0.15s;
-      box-shadow: 0 .5rem 1rem rgba(0,0,0,.15) !important;
-    }
-    .btn{
-      transition:0.25s;
-    }
-    .btn:hover{
-      transition:0.25s;
-    }
-    .btn{
-      border:none;
-    }
-    .btn-success{
-      transition:0.25s;
-    }
-    .btn-success:hover{
-      background-color: rgb(4, 222, 0);
-      transition:0.25s;
-    }
-    .btn-danger{
-      transition:0.25s;
-      background-color:rgb(228, 0, 48);
-    }
-    .btn-danger:hover{
-      transition:0.25s;
-      background-color:rgb(255, 0, 54);
-    }
-    .btn-info{
-      transition:0.25s;
-      background-color:rgb(0, 155, 213);
-    }
-    .btn-info:hover{
-      transition:0.25s;
-      background-color:rgb(0, 186, 255);
-    }
-    .navbar input{
-      height:38px;
-    }
-    </style>
-  </head>
+<?php
+//entire head tag, url constant and initialization include
+include 'inc/head.php';
+require('inc/const.php');
+require('inc/initialize.php')
+?>
   <body>
-
-    <div class="navbar navbar-light bg-light">
-      <div class="nav-form">
+<!-- Folder creation modal -->
+<div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLongTitle">Create A New Folder</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+      <form class="modal-group" action="main.php" method="post">
+        <div class="form-group">
+          <label for="foldername">Folder Name</label>
+          <small class="form-text text-muted">Only letters and numbers will be saved, some symbols will be filtered</small>
+          <input class="form-control" name="foldername" type="text" maxlength="20" placeholder="Type folder name here" required>
+        </div>
+  <div class="form-group">
+    <input type="hidden" name="folder" value="<?php echo $_GET['folder']?>">
+</div>
+      </div>
+      <div class="modal-footer">
+        <div class="buttons">
+        <button type="button" class="btn btn-secondary modal-btn" data-dismiss="modal">Close</button>
+        <button type="submit" class="btn-m-l btn btn-primary modal-btn" name="newfolder">Save changes</button>
+      </div>
+      </form>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- End of folder creation modal -->
+<!-- File Upload Modal -->
+<div class="modal fade" id="uploadmodal" tabindex="-1" role="dialog" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLongTitle">New File</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
         <form class="form-inline" enctype="multipart/form-data" action="upload.php" method="post">
+        <div class="form-group">
           <div class="custom-file form-inline">
+            <label for="exampleFormControlSelect1">Optional : &nbsp</label>
             <input type="file" class="custom-file-input" name="file" id="customFile">
             <label class="custom-file-label" for="customFile">Choose file</label>
-            <input class="nav-form-btn btn btn-success my-2 my-sm-0" type="submit" name="upload" value="Upload">
           </div>
+        </div>
+        <div class="form-group upload-second">
+        <label for="exampleFormControlSelect1">Optional : Type the name of the subfolder</label>
+        <small class="form-text text-muted">Example. "folder/subfolder" without quotations. not case sensitive</small>
+        <small class="form-text text-muted">Not typing any folder name will save the file on current folder thats opened</small>
+      </div>
+      <input type='text' name="subfolder" class="form-control" value="<?php echo $_GET['folder'];?>">
+      </div>
+      <div class="modal-footer">
+        <div class="buttons">
+            <button type="button" class="modal-btn btn btn-secondary" data-dismiss="modal">Close</button>
+          <button class="modal-btn btn-m-l btn btn-primary" type="submit" name="upload">Save changes</button>
         </form>
-        <form action="<?php echo $_SERVER['PHP_SELF']; ?>" method="GET">
-          <div class="selector form-group row">
-            <div class="col">
-              <select name="sort" class="form-control">
-                <option <?php if(isset($_GET['sort'])){if($_GET['sort']=="name"){echo "selected ";}}?>value="name">Name</option>
-                <option <?php if(isset($_GET['sort'])){if($_GET['sort']=="size"){echo "selected ";}}?>value="size">Size</option>
-                <option <?php if(isset($_GET['sort'])){if($_GET['sort']=="type"){echo "selected ";}}?>value="type">Type</option>
-                <option <?php if(isset($_GET['sort'])){if($_GET['sort']=="date"){echo "selected ";}}?>value="date">Date</option>
-              </select>
-            </div>
-<div class="col">
-  <select name="type" class="form-control">
-    <option <?php if(isset($_GET['sort'])){if($_GET['type']=="asc"){echo "selected ";}}?> value="asc">ASC</option>
-    <option <?php if(isset($_GET['sort'])){if($_GET['type']=="desc"){echo "selected ";}}?>value="desc">DSC</option>
-  </select>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>
-  <button class="nav-form-btn btn btn-info my-2 my-sm-0" type="submit">Sort</button>
-            </div>
-        </form>
-      </div>
-      </div>
+<!-- End of File Upload Modal -->
 <?php
-if (isset($_GET['message'])) {
-  switch ($_GET['message']) {
-    case "nofile":
-      echo '<div class="alert alert-danger" role="alert">You haven\'t selected any file!</div>';
-      break;
-      case "uploaderror":
-        echo '<div class="alert alert-danger" role="alert">There was an error while uploading your file, please try again later!</div>';
-        break;
-        case "big":
-          echo '<div class="alert alert-danger" role="alert">Your uploaded file extends 45MB!</div>';
-          break;
-          case "success":
-            echo '<div class="alert alert-success" role="alert">Your file has been successfuly uploaded!</div>';
-            break;
-            case "renex":
-              echo '<div class="alert alert-warning" role="alert">Your file haven\'t been renamed, file name already exists!</div>';
-              break;
-              case "UAC":
-                echo '<div class="alert alert-danger" role="alert">Unauthorized Access!</div>';
-                break;
-                case "noname":
-                  echo '<div class="alert alert-danger" role="alert">You haven\'t typed any name!</div>';
-                  break;
-                  case "rename":
-                    echo '<div class="alert alert-success" role="alert">Rename Successful!</div>';
-                    break;
-                    case "deleted":
-                      echo '<div class="alert alert-info" role="alert">File Deleted!</div>';
-                      break;
-  }
+  //Navigation and alert messages include
+    include 'inc/navbar.php';
+    include 'inc/messages.php';
+?>
+<!-- Back button -->
+<?php
+if ($_GET['folder'] != 'uploads/') {
+    $folder = $_GET['folder'];
+    $boom = explode("/", $folder);
+    $ready= [];
+    foreach ($boom as $piece => $value) {
+        $value = trim($value);
+        if (!empty($value)) {
+            $ready[] = $value;
+        }
+    }
+    $picker = array_slice($ready, 0, -1);
+    $string = implode("/", $picker);
+    echo '<div class="navbar navbar-light bg-light"><div class="directories row">
+<a class="backbtn" href="?page=0&sort=name&type=asc&folder='.$string.'/"><i class="fas fa-arrow-circle-left"></i></a></div></div>';
 }
- ?>
+?>
  <table class="table text-center">
    <thead>
    <tr>
      <th scope="col">#</th>
-     <th scope="col">File Name</th>
-     <th scope="col">Size</th>
-     <th scope="col">Date Created</th>
-     <th scope="col">Type</th>
+     <th scope="col">
+<!-- Checking which sort method is used and assigning a link to an anchor tag, column onclick sorting functionality -->
+       <a href="
+<?php
+if (isset($_GET['sort'])) {
+    if ($_GET['sort']=='name' && $_GET['type']=='desc') {
+        echo "?sort=name&type=asc&page=".$_GET['page']."&folder=".$_GET['folder'];
+    } elseif ($_GET['sort']=='name' && $_GET['type']=='asc') {
+        echo "?sort=name&type=desc&page=".$_GET['page']."&folder=".$_GET['folder'];
+    } else {
+        echo '?sort=name&type=desc&page='.$_GET['page']."&folder=".$_GET['folder'];
+    }
+} else {
+    echo '?sort=name&type=desc&page='.$_GET['page']."&folder=".$_GET['folder'];
+}
+?>
+">File Name</a></th>
+     <th scope="col"><a href="
+<?php
+if (isset($_GET['sort'])) {
+    if ($_GET['sort']=='size' && $_GET['type']=='desc') {
+        echo "?sort=size&type=asc&page=".$_GET['page']."&folder=".$_GET['folder'];
+    } elseif ($_GET['sort']=='size' && $_GET['type']=='asc') {
+        echo "?sort=size&type=desc&page=".$_GET['page']."&folder=".$_GET['folder'];
+    } else {
+        echo '?sort=size&type=desc&page='.$_GET['page']."&folder=".$_GET['folder'];
+    }
+} else {
+    echo '?sort=name&type=desc&page='.$_GET['page']."&folder=".$_GET['folder'];
+}?>
+ ">Size</a></th>
+     <th scope="col"><a href="
+<?php
+  if (isset($_GET['sort'])) {
+      if ($_GET['sort']=='date' && $_GET['type']=='desc') {
+          echo "?sort=date&type=asc&page=".$_GET['page']."&folder=".$_GET['folder'];
+      } elseif ($_GET['sort']=='date' && $_GET['type']=='asc') {
+          echo "?sort=date&type=desc&page=".$_GET['page']."&folder=".$_GET['folder'];
+      } else {
+          echo '?sort=date&type=desc&page='.$_GET['page']."&folder=".$_GET['folder'];
+      }
+  } else {
+      echo '?sort=date&type=desc&page='.$_GET['page']."&folder=".$_GET['folder'];
+  }?>
+  ">Date Created</th>
+     <th scope="col"><a href="
+<?php
+if (isset($_GET['sort'])) {
+      if ($_GET['sort']=='type' && $_GET['type']=='desc') {
+          echo "?sort=type&type=asc&page=".$_GET['page']."&folder=".$_GET['folder'];
+      } elseif ($_GET['sort']=='type' && $_GET['type']=='asc') {
+          echo "?sort=type&type=desc&page=".$_GET['page']."&folder=".$_GET['folder'];
+      } else {
+          echo '?sort=type&type=desc&page='.$_GET['page']."&folder=".$_GET['folder'];
+      }
+  } else {
+      echo '?sort=type&type=desc&page='.$_GET['page']."&folder=".$_GET['folder'];
+  }?>
+  ">Type</th>
      <th scope="col">Actions</th>
    </tr>
  </thead>
- <?php
-
- if(isset($_GET['sort'])){
-
-   $dir="uploads/";
- function LoadFiles($dir) {
- $Files = array();
- $handler =  opendir($dir);
- if (!$handler)
-   die('Cannot list files for ' . $dir);
-   while ($Filename = readdir($handler)) {
-     if ($Filename == '.' || $Filename == '..')
-     continue;
-
-     $LastModified = filemtime($dir . $Filename);
-     $filesize = filesize($dir.$Filename);
-     $filextension = explode(".",$Filename);
-     $filetp = end($filextension);
-     $Files[] = array($dir . $Filename, $LastModified, $filesize, $filetp);
-   }
-
- return $Files;
- }
-
- function DateCmp($a, $b) {
- return ($a[1] < $b[1]) ? -1 : 0;
- }
-
- function SortByDate(&$Files) {
- usort($Files, function($a, $b) {
- return $a['1'] <=> $b['1'];
- });
- }
-
- function SortByDateAsc(&$Files) {
- usort($Files, function($a, $b) {
- return $a['1'] <= $b['1'];
- });
- }
-
- function SortByNameDsc(&$Files) {
- usort($Files, function($a, $b) {
- return $a['0'] <= $b['0'];
- });
- }
-
- function SortByNameAsc(&$Files) {
- usort($Files, function($a, $b) {
- return $a['0'] <=> $b['0'];
- });
- }
-
- function SortBySizeDsc(&$Files) {
- usort($Files, function($a, $b) {
- return $a['2'] <= $b['2'];
- });
- }
-
- function SortBySizeAsc(&$Files) {
- usort($Files, function($a, $b) {
- return $a['2'] <=> $b['2'];
- });
- }
-
- function SortByTypeAsc(&$Files) {
- usort($Files, function($a, $b) {
- return $a['3'] <= $b['3'];
- });
- }
-
- function SortByTypeDsc(&$Files) {
- usort($Files, function($a, $b) {
- return $a['3'] <=> $b['3'];
- });
- }
-
- $Files = LoadFiles('uploads/');
- if ($_GET['sort']==="date" && $_GET['type']==="desc") {
-   SortByDate($Files);
- }elseif($_GET['sort']=="date" && $_GET['type']=="asc"){
-   SortByDateAsc($Files);
- }elseif($_GET['sort']=="name" && $_GET['type']=="desc"){
-   SortByNameDsc($Files);
- }elseif($_GET['sort']=="name" && $_GET['type']=="asc"){
-   SortByNameAsc($Files);
- }elseif($_GET['sort']=="size" && $_GET['type']=="desc"){
-   SortBySizeDsc($Files);
- }elseif($_GET['sort']=="size" && $_GET['type']=="asc"){
-   SortBySizeAsc($Files);
- }elseif($_GET['sort']=="type" && $_GET['type']=="asc"){
-   SortByTypeAsc($Files);
- }elseif($_GET['sort']=="type" && $_GET['type']=="desc"){
-   SortByTypeDsc($Files);
- }
- $count = 1;
- foreach($Files as $source):?>
- <tr>
-   <td><?php echo $count; ?></td>
-   <td><a href="<?php $count++; echo $source[0] ?>" /><?php echo substr($source[0], 8); ?></a></td>
-   <td>
-   <?php
-           $path = $source[0];
-           $size = filesize($path);
-           $units = array( 'B', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB');
-           $power = $size > 0 ? floor(log($size, 1024)) : 0;
-           echo number_format($size / pow(1024, $power), 2, '.', ',') . ' ' . $units[$power]; ?></td>
-           <td><?php echo date("F d Y H:i:s",filemtime($source[0]));?></td>
-           <td><?php  $ext = explode(".",$source[0]); echo end($ext);?></td>
-           <td class="actions"><?php echo '<a class="btn btn-success" href="rename.php?name='.substr($source[0], 8).'">Rename</a><form action="main.php" method="POST"> <button class="btn btn-danger" type="submit" name="del" value="'.substr($source[0], 8).'">Delete</button></form>';?></td>
- </tr>
-
-<?php endforeach;
-}?>
-    <?php if(!isset($_GET['sort'])):
-      $files = scandir('uploads');
-    $files = array_diff($files, array('.', '..'));
-    $count = 0;
-    foreach($files as $file): ?>
-    <?php $count++; ?>
-    <tr>
-        <td><?php echo $count;?></td><td><a href="uploads/<?php echo $file; ?>"><?php echo $file; ?></td>
-        <td>
+<!-- Core file loader and pagination -->
 <?php
-        $path = 'uploads/'.$file;
-        $size = filesize($path);
-        $units = array( 'B', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB');
-        $power = $size > 0 ? floor(log($size, 1024)) : 0;
-        echo number_format($size / pow(1024, $power), 2, '.', ',') . ' ' . $units[$power]; ?></td>
-        <td><?php echo date("F d Y H:i:s",filemtime("uploads/".$file));?></td>
-        <td><?php  $ext = explode(".",$file); echo end($ext);?></td>
-        <td class="actions"><?php echo '<a class="btn btn-success" href="rename.php?name='.$file.'">Rename</a><form action="main.php" method="POST"> <button class="btn btn-danger" type="submit" name="del" value="'.$file.'">Delete</button></form>';?></td>
-    </tr>
-    <?php endforeach;
-
-endif;
-    ?>
-
-    <script>
-    $(".custom-file-input").on("change", function() {
-      var fileName = $(this).val().split("\\").pop();
-      $(this).siblings(".custom-file-label").addClass("selected").html(fileName);
-    });
-    </script>
+  $GLOBALS['limit'] = 8;
+  $GLOBALS['page'] = (int)$_GET['page']?:0;
+  $GLOBALS['skip'] = $GLOBALS['limit'] * $GLOBALS['page'];
+function LoadFiles($dir)
+{
+    $handler =  opendir($dir);
+    $Files = array();
+    if (!$handler) {
+        die('Cannot list files for ' . $dir);
+    }
+    $blacklist = array('.', '..', 'css', 'index.php', 'main.php', 'rename.php', 'upload.php', 'favicon.png');
+    $GLOBALS['skipped'] = 0;
+    while ($Filename = readdir($handler)) {
+        if ($Filename == '.' || $Filename == '..') {
+            continue;
+        }
+        if (!in_array($Files, $blacklist)) {
+            $GLOBALS['skipped']++;
+        }
+        if ($GLOBALS['skipped'] < $GLOBALS['skip'] || $GLOBALS['skipped'] >= $GLOBALS['skip'] + $GLOBALS['limit']) {
+            continue;
+        }
+        $LastModified = filemtime($dir . $Filename);
+        $filesize = filesize($dir.$Filename);
+        $filextension = explode(".", $Filename);
+        $filetp = end($filextension);
+        $Files[] = array($dir . $Filename, $LastModified, $filesize, $filetp);
+    }
+    return $Files;
+}
+//include for sorting functions
+include 'inc/functions.php';
+$Files = LoadFiles($_GET['folder']);
+// Checking which sort method is used and calling proper sorting function using call.php
+include 'inc/call.php';
+$count = 1;?>
+<!-- Cycling through files and displaying them -->
+<?php foreach ($Files as $source):?>
+<tr>
+  <td><?php
+   echo $count; $count++;?></td>
+  <td class="title-container text-left"><a href="
+    <?php
+   if (is_dir($source[0])) {
+       echo '?page=0&sort=name&type=desc&folder='.$source[0]."/";
+   } else {
+       echo $source[0];
+   }?>">
+  <span class="icon">
+     <?php
+  //checking extension and appying an icon, using function which is located inside functions.php
+ $ext = explode(".", $source[0]);
+  $end = end($ext);
+  if (is_dir($end)) {
+      $extension = explode("/", $source[0]);
+      $select = end($extension);
+      echo '<i class="fas fa-folder"></i></span>' . $select;
+  } else {
+      $extension = explode("/", $source[0]);
+      $select = end($extension);
+      CreateIcon($select); ?></span><?php
+     echo $select;
+  }
+  ?></a>
+</td>
+  <td>
+    <!-- Calculating file size -->
+<?php
+  $path = $source[0];
+  $size = filesize($path);
+  $units = array( 'B', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB');
+  $power = $size > 0 ? floor(log($size, 1024)) : 0;
+  echo number_format($size / pow(1024, $power), 2, '.', ',') . ' ' . $units[$power]; ?></td>
+  <td><?php echo date("F d Y H:i:s", filemtime($source[0]));?></td>
+  <td><?php  $ext = explode(".", $source[0]);
+  $end = end($ext);
+  if (is_dir($end)) {
+      echo 'Folder';
+  } else {
+      echo end($ext);
+  }
+  ?></td>
+  <td class="actions"><?php echo '<a class="btn btn-success" href="rename.php?name='.substr($source[0], 8).'">Rename</a><form action="main.php" method="POST"><input type="hidden" name="location" value="'.$_GET['folder'].'"><button class="btn btn-danger" type="submit" name="del" value="'.substr($source[0], 8).'">Delete</button></form>';?></td>
+</tr>
+<?php endforeach; ?>
+<!-- Endpoint of pagination -->
+<?php
+ $pages = (int)$GLOBALS['skipped'] / $GLOBALS['limit'];
+ if ($GLOBALS['skipped'] % $GLOBALS['limit']) {
+     $pages ++;
+ }
+     $pagination = 0;
+     echo "<ul class='pagination'>";
+ for ($i = 0; $i <= $pages; $i++) {
+     $pagination++;
+     $class = '';
+     if ($page == $i) {
+         $class = 'class="active"';
+     } ?>
+ <li class="page-item"><a class="page-link" href="<?php
+ //Checking which method is present and assiging a value to pagination so it wont break, calling a function for that which is located inside functions.php
+  CreatePageName(); ?>&page=<?= $i ?><?php echo '&folder=' . $_GET['folder']; ?>" <?= $class ?>><?= $pagination ?></a></li><?php
+ }
+?>
+  <script src="js/assets.js"></script>
   </table>
   </body>
 </html>

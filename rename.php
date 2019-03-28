@@ -1,3 +1,4 @@
+<!-- rename view  -->
 <!DOCTYPE html>
 <html lang="en" dir="ltr">
   <head>
@@ -12,15 +13,16 @@
   </head>
   <body>
 <?php
+require('inc/const.php');
 if (isset($_GET['name'])) {
   if($_GET['name']==''){
-    header('location: /');
+    header('location: ' . URL);
   }else{
     echo '<form action="main.php" method="POST"><div class="card">
     <input name="oldname" type="hidden" value="'.$_GET['name'].'">
     <input class="form-control" type="text" placeholder="'.$_GET['name'].'" readonly>
     <div class="card-body">
-      <input type="text" class="form-control" name="newname" placeholder="Type new name here">
+      <input type="text" maxlength="50" class="form-control" name="newname" placeholder="Type new name here" required>
       <br>
       <input name="rename" type="submit" class="btn btn-success" class="btn btn-success" value="Submit">
     </div>
