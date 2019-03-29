@@ -100,6 +100,7 @@ if ($_GET['folder'] != 'uploads/') {
  <table class="table text-center">
    <thead>
    <tr>
+     <th scope="col">#</th>
      <th scope="col">
 <!-- Checking which sort method is used and assigning a link to an anchor tag, column onclick sorting functionality -->
        <a href="
@@ -208,6 +209,8 @@ if ($arrlen > $GLOBALS['limit']) {
  ?>
 <?php foreach ($Files as $source):?>
 <tr>
+  <td><?php
+   echo $count; $count++;?></td>
   <td class="title-container text-left"><a href="
     <?php
    if (is_dir($source[0])) {
