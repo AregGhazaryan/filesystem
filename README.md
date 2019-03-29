@@ -18,7 +18,7 @@ Table should show folders clickable and different than files. After clicking on 
 Just run it
 
 ### Prerequisites
-Only fontawesome icons require internet connection to work, anything else works with or without connection
+Only Font Awesome icons require internet connection to work, anything else works with or without connection
 
 
 ### Installing
