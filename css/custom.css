@@ -161,12 +161,6 @@ table i{
   transition:0.2s;
   background-color:rgb(5, 0, 255) !important;
 }
-i{
-  font-family: 'Font Awesome 5 Free';
-  content: "\f008";
-  visibility: visible;
-  font-weight: 900;
-}
 .title-container{
   white-space: nowrap;
   overflow: hidden;
