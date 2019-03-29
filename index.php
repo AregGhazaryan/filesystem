@@ -100,7 +100,6 @@ if ($_GET['folder'] != 'uploads/') {
  <table class="table text-center">
    <thead>
    <tr>
-     <th scope="col">#</th>
      <th scope="col">
 <!-- Checking which sort method is used and assigning a link to an anchor tag, column onclick sorting functionality -->
        <a href="
@@ -184,9 +183,6 @@ function LoadFiles($dir)
         if (!in_array($Files, $blacklist)) {
             $GLOBALS['skipped']++;
         }
-        if ($GLOBALS['skipped'] < $GLOBALS['skip'] || $GLOBALS['skipped'] >= $GLOBALS['skip'] + $GLOBALS['limit']) {
-            continue;
-        }
         $LastModified = filemtime($dir . $Filename);
         $filesize = filesize($dir.$Filename);
         $filextension = explode(".", $Filename);
@@ -196,16 +192,22 @@ function LoadFiles($dir)
     return $Files;
 }
 //include for sorting functions
-include 'inc/functions.php';
 $Files = LoadFiles($_GET['folder']);
+include 'inc/functions.php';
 // Checking which sort method is used and calling proper sorting function using call.php
-include 'inc/call.php';
+// include 'inc/call.php';
 $count = 1;?>
 <!-- Cycling through files and displaying them -->
+<?php
+$arrlen = count($Files);
+if ($arrlen > $GLOBALS['limit']) {
+  $length = $GLOBALS['page'] + $GLOBALS['limit'];
+  $offset = $GLOBALS['page'] - $GLOBALS['limit'];
+  $Files = array_slice($Files,$GLOBALS['skip'],$length,true);
+}
+ ?>
 <?php foreach ($Files as $source):?>
 <tr>
-  <td><?php
-   echo $count; $count++;?></td>
   <td class="title-container text-left"><a href="
     <?php
    if (is_dir($source[0])) {

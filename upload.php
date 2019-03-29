@@ -86,7 +86,7 @@ if (isset($_POST['upload'])) {
                 header('location: ' . URL . '?page=0&sort=name&type=desc&folder=uploads/&message=uploaderror');
                 exit();
             }
-            header('location: ' . URL . '?page=0&sort=name&type=desc&folder='.$location.'/&message=success');
+            header('location: ' . URL . '?page=0&sort=name&type=desc&folder='.$location.'&message=success');
             exit();
         }
     }
