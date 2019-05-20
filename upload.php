@@ -12,9 +12,6 @@ if (isset($_POST['upload'])) {
         header('location: ' . URL . '?page=0&sort=name&type=desc&folder=uploads/&message=nofile');
     } elseif ($fileErrorMsg == 1) {
         header('location: ' . URL . '?page=0&sort=name&type=desc&folder=uploads/&message=uploaderror');
-    } elseif ($fileSize > 45000000) {
-        @unlink($fileTmpLoc);
-        header('location: ' . URL . '?page=0&sort=name&type=desc&folder=uploads/&message=big');
     } else {
         //checking if subfolder directory exists
         if (empty($location) || !isset($location) || $location === "" || $location === "uploads/") {
